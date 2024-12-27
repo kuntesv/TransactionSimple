@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System.Data.SqlClient;
+﻿using Microsoft.AspNetCore.Mvc;
 using TransactionSimple.Model;
 using TransactionSimple.Service;
 
@@ -83,8 +81,6 @@ namespace TransactionSimple.Controllers
                 throw new ArgumentOutOfRangeException(nameof(addtransactionsRequest.Price), "Price cannot be negative.");
             }
         }
-
-
 
     }
 }

@@ -81,7 +81,7 @@ namespace TransactionSimple.Service
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             {
-                SqlCommand cmd = new SqlCommand("SELECT Price, Category, Item, IsActive FROM TRecords", con);
+                SqlCommand cmd = new SqlCommand("SELECT * FROM TRecords", con);
 
                 con.Open();
                 using (SqlDataReader reader = cmd.ExecuteReader())
@@ -90,6 +90,7 @@ namespace TransactionSimple.Service
                     {
                         var record = new GetAllTransactionResponse
                         {
+                            Id = (int) Convert.ToInt64(reader["ID"]),
                             Price = (int)Convert.ToInt64(reader["Price"]),
                             Category = reader["Category"].ToString(),
                             Item = reader["Item"].ToString(),
