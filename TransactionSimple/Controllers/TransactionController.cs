@@ -4,7 +4,7 @@ using TransactionSimple.Service;
 
 namespace TransactionSimple.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/transaction")]
     [ApiController]
     public class TransactionController : ControllerBase
     {
@@ -17,7 +17,7 @@ namespace TransactionSimple.Controllers
             transactionService = new TransactionService(configuration);
         }
 
-        [HttpPost("addtransactions")]
+        [HttpPost("addTransaction")]
         public IActionResult AddTransactions([FromBody] AddtransactionsRequest addTransactionRequest)
         {
             // Validate the incoming request
@@ -26,7 +26,7 @@ namespace TransactionSimple.Controllers
             {
                 ValidateInput(addTransactionRequest);
 
-                rowsAffected = transactionService.AddRecord(addTransactionRequest);
+                rowsAffected = transactionService.AddTransaction(addTransactionRequest);
             }
             catch (Exception ex)
             {
@@ -42,22 +42,60 @@ namespace TransactionSimple.Controllers
             return CreatedAtAction(nameof(AddTransactions), new { id = addTransactionRequest.Item }, "Transaction created successfully.");
         }
 
-        [HttpGet("getAllTransactions")]
+        [HttpGet("getTransactions")]
         public IActionResult GetAllTransactions([FromQuery] String? sortProperty = null)
         {
-            List<GetAllTransactionResponse> outputRecords;
+            List<GetTransactionResponse> outputRecords;
 
             try
             {
-                outputRecords = transactionService.GetAllRecords(sortProperty);
+                outputRecords = transactionService.GetAllTransactionRecords(sortProperty);
 
                 return Ok(outputRecords); // Return 200 OK with the list of records
             }
             catch (Exception ex)
             {
                 return StatusCode(500, "Error retrieving data from the database: " + ex.Message);
+
             }
         }
+
+
+        [HttpPatch("updateTransaction")]
+        public IActionResult UpdateTransaction([FromBody] UpdateTransactionRequest updateTransactionRequest)
+        {
+            UpdateTransactionResponse response;
+
+            try {
+                response = transactionService.UpdateTransaction(updateTransactionRequest);
+                return Ok(response);
+            } catch (Exception ex) {
+                return StatusCode(500, "Error retrieving data from the database: " + ex.Message);
+            }
+        }
+
+        [HttpDelete("deleteTransaction")]
+        public IActionResult DeleteTransaction([FromQuery] int transactionId)
+        {
+            try
+            {
+                bool response = transactionService.DeleteTransaction(transactionId);
+
+                if (response)
+                {
+                    return NoContent(); // Returns a 204 No Content response
+                }
+                else
+                {
+                    return NotFound($"Transaction with ID {transactionId} not found."); // Returns a 404 Not Found if the transaction does not exist
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Error deleting data from the database: " + ex.Message); // Returns a 500 Internal Server Error
+            }
+        }
+
 
         private static void ValidateInput(AddtransactionsRequest addtransactionsRequest)
         {
