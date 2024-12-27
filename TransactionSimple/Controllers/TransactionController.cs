@@ -18,7 +18,7 @@ namespace TransactionSimple.Controllers
         }
 
         [HttpPost("addTransaction")]
-        public IActionResult AddTransactions([FromBody] AddtransactionsRequest addTransactionRequest)
+        public IActionResult AddTransaction([FromBody] AddtransactionsRequest addTransactionRequest)
         {
             // Validate the incoming request
             int rowsAffected = 0;
@@ -27,23 +27,22 @@ namespace TransactionSimple.Controllers
                 ValidateInput(addTransactionRequest);
 
                 rowsAffected = transactionService.AddTransaction(addTransactionRequest);
+                if (rowsAffected > 0)
+                {
+                    return CreatedAtAction(nameof(AddTransaction), new { id = addTransactionRequest.Item }, "Transaction created successfully.");
+                }
+                else {
+                    return BadRequest(new ApiResponse(400, "No records were inserted."));
+                }
             }
             catch (Exception ex)
             {
                 return StatusCode(500, new ApiResponse(500, "An unexpected error occurred." + ex.Message));
             }
-
-            // Check if any rows were affected
-            if (rowsAffected <= 0)
-            {
-                return BadRequest(new ApiResponse(400, "No records were inserted."));
-            }
-
-            return CreatedAtAction(nameof(AddTransactions), new { id = addTransactionRequest.Item }, "Transaction created successfully.");
         }
 
         [HttpGet("getTransactions")]
-        public IActionResult GetAllTransactions([FromQuery] String? sortProperty = null)
+        public IActionResult GetTransactions([FromQuery] String? sortProperty = null)
         {
             List<GetTransactionResponse> outputRecords;
 
@@ -56,7 +55,6 @@ namespace TransactionSimple.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, "Error retrieving data from the database: " + ex.Message);
-
             }
         }
 
