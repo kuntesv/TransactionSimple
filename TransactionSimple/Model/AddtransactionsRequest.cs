@@ -1,6 +1,6 @@
 ﻿namespace TransactionSimple.Model
 {
-    public class AddTransactionRequest
+    public class AddtransactionsRequest
     {
         public int Price { get; set; }
 

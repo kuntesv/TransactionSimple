@@ -11,7 +11,7 @@ namespace TransactionSimple.Service
             _connectionString = configuration.GetConnectionString("LocalSql");
         }
 
-        public int AddRecord(AddTransactionRequest addTransactionRequest)
+        public int AddRecord(AddtransactionsRequest addTransactionRequest)
         {
             int rowsAffected = 0;
             try
@@ -43,7 +43,7 @@ namespace TransactionSimple.Service
             return rowsAffected;
         }
 
-        public int GetAllRecord(AddTransactionRequest addTransactionRequest)
+        public int GetAllRecord(AddtransactionsRequest addTransactionRequest)
         {
             int rowsAffected = 0;
             try
@@ -75,9 +75,9 @@ namespace TransactionSimple.Service
             return rowsAffected;
         }
 
-        public List<TransactionRecord> GetAllRecords(string sortProperty)
+        public List<GetAllTransactionResponse> GetAllRecords(string sortProperty)
         {
-            List<TransactionRecord> outputRecords = new List<TransactionRecord>();
+            List<GetAllTransactionResponse> outputRecords = new List<GetAllTransactionResponse>();
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             {
@@ -88,7 +88,7 @@ namespace TransactionSimple.Service
                 {
                     while (reader.Read())
                     {
-                        var record = new TransactionRecord
+                        var record = new GetAllTransactionResponse
                         {
                             Price = (int)Convert.ToInt64(reader["Price"]),
                             Category = reader["Category"].ToString(),

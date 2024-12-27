@@ -2,7 +2,7 @@
 
 namespace TransactionSimple.Model
 {
-    public class TransactionRecord
+    public class GetAllTransactionResponse
     {
         public int Price { get; set; }
         public string Category { get; set; }

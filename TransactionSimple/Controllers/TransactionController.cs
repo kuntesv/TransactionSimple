@@ -20,7 +20,7 @@ namespace TransactionSimple.Controllers
         }
 
         [HttpPost("addtransactions")]
-        public IActionResult AddTransactions([FromBody] AddTransactionRequest addTransactionRequest)
+        public IActionResult AddTransactions([FromBody] AddtransactionsRequest addTransactionRequest)
         {
             // Validate the incoming request
             int rowsAffected = 0;
@@ -32,7 +32,7 @@ namespace TransactionSimple.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new ApiResponse(500, "An unexpected error occurred."));
+                return StatusCode(500, new ApiResponse(500, "An unexpected error occurred." + ex.Message));
             }
 
             // Check if any rows were affected
@@ -45,9 +45,9 @@ namespace TransactionSimple.Controllers
         }
 
         [HttpGet("getAllTransactions")]
-        public IActionResult GetAllTransactions([FromQuery] String sortProperty = null)
+        public IActionResult GetAllTransactions([FromQuery] String? sortProperty = null)
         {
-            List<TransactionRecord> outputRecords;
+            List<GetAllTransactionResponse> outputRecords;
 
             try
             {
@@ -61,16 +61,29 @@ namespace TransactionSimple.Controllers
             }
         }
 
-        private static void ValidateInput(AddTransactionRequest addTransactionRequest)
+        private static void ValidateInput(AddtransactionsRequest addtransactionsRequest)
         {
-            if (addTransactionRequest == null ||
-                string.IsNullOrEmpty(addTransactionRequest.Category) ||
-                string.IsNullOrEmpty(addTransactionRequest.Item) ||
-                addTransactionRequest.Price < 0) // Assuming Price should not be negative
+            if (addtransactionsRequest == null)
             {
-                throw new Exception($"Invalid input please check constraints.", new ArgumentException());
+                throw new ArgumentNullException(nameof(addtransactionsRequest), "The transaction request cannot be null.");
+            }
+
+            if (string.IsNullOrEmpty(addtransactionsRequest.Category))
+            {
+                throw new ArgumentException("Category is required.", nameof(addtransactionsRequest.Category));
+            }
+
+            if (string.IsNullOrEmpty(addtransactionsRequest.Item))
+            {
+                throw new ArgumentException("Item is required.", nameof(addtransactionsRequest.Item));
+            }
+
+            if (addtransactionsRequest.Price < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(addtransactionsRequest.Price), "Price cannot be negative.");
             }
         }
+
 
 
     }
